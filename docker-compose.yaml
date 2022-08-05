@@ -1,0 +1,56 @@
+version: '2'
+services:
+  master:
+    build:
+      context: .
+    image: elastic-krauze/node:alpha1.4
+    restart: unless-stopped
+    environment:
+      EL_NODE_NAME: "master"
+      EL_NODE_ROLE: "master"
+      EL_NETWORK: "0.0.0.0"
+      EL_HOSTS: "master, data1, data2"
+    container_name: master
+    networks:
+      - elastic
+    ports:
+      - 9200:9200
+    mem_limit: 512m
+    cpus: 0.5
+  data1:
+    build:
+      context: .
+    image: elastic-krauze/node:alpha1.4
+    restart: unless-stopped
+    environment:
+      EL_NODE_NAME: "data1"
+      EL_NODE_ROLE: "data, ingest"
+      EL_NETWORK: "0.0.0.0"
+      EL_HOSTS: "master, data1, data2"
+    container_name: data1
+    networks:
+      - elastic
+    ports:
+      - 9210:9200
+    mem_limit: 512m
+    cpus: 0.5
+  data2:
+    build:
+      context: .
+    image: elastic-krauze/node:alpha1.4
+    restart: unless-stopped
+    environment:
+      EL_NODE_NAME: "data2"
+      EL_NODE_ROLE: "data, ingest"
+      EL_NETWORK: "0.0.0.0"
+      EL_HOSTS: "master, data1, data2"
+    container_name: data2
+    networks:
+      - elastic
+    ports:
+      - 9220:9200
+    mem_limit: 512m
+    cpus: 0.5
+networks:
+  elastic:
+    driver: bridge      
